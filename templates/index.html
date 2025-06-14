@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Indic Language Detection</title>
     <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/static/icon.png" type="image/png"> <!-- Added favicon -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -188,7 +189,7 @@
         <h1>Indic Language Detection</h1>
         <form id="upload-form" method="post" enctype="multipart/form-data" action="/predict">
             <div class="form-group">
-                <label for="file-input">Supported formats: .wav, .mp3, .ogg, .m4a</label>
+                <label for="file-input">Supported formats: .wav, .mp3</label> <!-- Updated to .wav and .mp3 only -->
                 <input type="file" name="file" id="file-input" accept="audio/*">
             </div>
             <button type="submit" class="btn" id="predict-btn">Predict Language</button>
