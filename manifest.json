@@ -3,18 +3,20 @@
   "short_name": "IndicLangDetect",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "background_color": "#1a1a1a",  // Matches the app's background
+  "theme_color": "#2ecc71",      // Matches the "Predict Language" button's gradient
   "icons": [
     {
       "src": "/static/icon.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/static/icon.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
