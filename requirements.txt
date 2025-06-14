@@ -1,6 +1,6 @@
 ﻿flask==2.3.3
 gunicorn==21.2.0
-tensorflow==2.11.0
+tensorflow-cpu==2.11.0
 librosa==0.10.1
 numpy>=1.22,<1.24
 scikit-learn==1.2.2
