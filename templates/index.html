@@ -1,0 +1,245 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indic Language Detection</title>
+    <link rel="manifest" href="/manifest.json">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            });
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif; /* Replaced Roboto with system font */
+            background: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 90%; /* Adjusted for better mobile responsiveness */
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 20px; /* Reduced padding for smaller screens */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        .container:hover {
+            transform: translateY(-10px);
+        }
+        h1 {
+            color: #ffffff;
+            font-size: 1.5rem; /* Adjusted for better scaling on mobile */
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .form-group {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .form-group label {
+            color: #ffffff;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+        input[type="file"] {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        input[type="file"]:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        input[type="file"]::-webkit-file-upload-button {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background: linear-gradient(90deg, #2980b9, #3498db);
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            color: #ffffff;
+            text-transform: uppercase;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+        }
+        .btn:disabled {
+            background: linear-gradient(90deg, #666, #555);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .error {
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+        .file-info {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .audio-player {
+            margin-top: 20px;
+            text-align: center;
+        }
+        audio {
+            width: 100%;
+            outline: none;
+            border-radius: 8px;
+        }
+        .predictions {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .predictions h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .predictions p {
+            font-size: 0.9rem;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .predictions p:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        @media (max-width: 400px) {
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.3rem;
+            }
+            .btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Indic Language Detection</h1>
+        <form id="upload-form" method="post" enctype="multipart/form-data" action="/predict">
+            <div class="form-group">
+                <label for="file-input">Supported formats: .wav, .mp3, .ogg, .m4a</label>
+                <input type="file" name="file" id="file-input" accept="audio/*">
+            </div>
+            <button type="submit" class="btn" id="predict-btn">Predict Language</button>
+        </form>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if filename %}
+            <div class="file-info">
+                Uploaded File: {{ filename }}
+            </div>
+            <div class="audio-player">
+                <audio controls>
+                    <source src="{{ url_for('uploaded_file', filename=filename) }}">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        {% endif %}
+        {% if predictions %}
+            <div class="predictions">
+                <h2>Model Predictions</h2>
+                {% for model, result in predictions.items() %}
+                    <p>{{ model }}: {{ result.label }} {% if result.confidence %}({{ '%.2f' | format(result.confidence) }}% confidence){% endif %}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const predictBtn = document.getElementById('predict-btn');
+        const uploadForm = document.getElementById('upload-form');
+
+        // Display selected file name before upload
+        fileInput.addEventListener('change', () => {
+            const fileName = fileInput.files[0]?.name || 'No file selected';
+            const fileInfo = document.createElement('div');
+            fileInfo.className = 'file-info';
+            fileInfo.textContent = `Selected File: ${fileName}`;
+            const existingFileInfo = document.querySelector('.file-info');
+            if (existingFileInfo) {
+                existingFileInfo.remove();
+            }
+            fileInput.parentElement.insertAdjacentElement('afterend', fileInfo);
+        });
+
+        // Disable button during form submission to indicate loading
+        uploadForm.addEventListener('submit', () => {
+            predictBtn.disabled = true;
+            predictBtn.textContent = 'Processing...';
+        });
+    </script>
+</body>
+</html>
