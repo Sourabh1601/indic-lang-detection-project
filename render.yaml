@@ -2,6 +2,6 @@ services:
   - type: web
     name: IndicLanguageDetection-1
     runtime: python
-    pythonVersion: 3.11.9  # Use Python 3.11.9 for TensorFlow 2.12.0 compatibility
+    pythonVersion: 3.11.9
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
