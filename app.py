@@ -1,4 +1,4 @@
-﻿import os
+import os
 os.environ['CUDA_VISIBLE_DEVICES'] = ''  # Suppress GPU usage
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow logging
 
@@ -16,7 +16,7 @@ app.static_folder = 'static'
 # Paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, 'Uploads')
-ALLOWED_EXTENSIONS = {'wav', 'mp3', 'ogg', 'm4a'}
+ALLOWED_EXTENSIONS = {'wav', 'mp3'}  # Updated to support only .wav and .mp3
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Create uploads directory if it doesn't exist
@@ -186,7 +186,6 @@ def predict():
                 print(f"SVM prediction failed: {e}")
         if ann_model:
             try:
-                # Get input and output tensors
                 input_details = ann_model.get_input_details()
                 output_details = ann_model.get_output_details()
                 ann_model.set_tensor(input_details[0]['index'], features_scaled.astype(np.float32))
@@ -198,11 +197,15 @@ def predict():
                 print(f"ANN predicted: {ann_label}, confidence: {ann_confidence}%")
             except Exception as e:
                 print(f"ANN prediction failed: {e}")
-        if os.path.exists(wav_path):
-            os.remove(wav_path)
+        # Keep the file for the audio player; clean up the previous file if it exists
+        if not hasattr(app, 'last_uploaded_file'):
+            app.last_uploaded_file = None
+        if app.last_uploaded_file and os.path.exists(app.last_uploaded_file):
+            os.remove(app.last_uploaded_file)
+        app.last_uploaded_file = wav_path  # Store the current file path
         return render_template('index.html', predictions=predictions, filename=filename)
     else:
-        return render_template('index.html', error='Invalid file format. Please upload a .wav, .mp3, .ogg, or .m4a file')
+        return render_template('index.html', error='Invalid file format. Please upload a .wav or .mp3 file')  # Updated error message
 
 @app.route('/manifest.json')
 def serve_manifest():
