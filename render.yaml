@@ -1,10 +1,7 @@
+
 services:
   - type: web
-<<<<<<< HEAD
     name: indiclanguagedetection
-=======
-    name: indiclanguagedetection  # Updated to match the deployed URL
->>>>>>> b8a85b9d84acd488d7644cce7f3bb50c9efb44a5
     runtime: python
     pythonVersion: 3.13.4
     buildCommand: pip install -r requirements.txt

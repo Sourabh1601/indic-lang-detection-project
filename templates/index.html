@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Indic Language Detection</title>
     <link rel="manifest" href="/manifest.json">
-    <link rel="icon" href="/static/icon.png" type="image/png"> <!-- Added favicon -->
+    <link rel="icon" href="/static/icon.png" type="image/png">
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -22,7 +22,7 @@
             box-sizing: border-box;
         }
         body {
-            font-family: Arial, Helvetica, sans-serif; /* Replaced Roboto with system font */
+            font-family: Arial, Helvetica, sans-serif;
             background: #1a1a1a;
             min-height: 100vh;
             display: flex;
@@ -33,13 +33,13 @@
         .container {
             position: relative;
             z-index: 2;
-            width: 90%; /* Adjusted for better mobile responsiveness */
+            width: 90%;
             max-width: 500px;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
-            padding: 20px; /* Reduced padding for smaller screens */
+            padding: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s ease;
         }
@@ -48,7 +48,7 @@
         }
         h1 {
             color: #ffffff;
-            font-size: 1.5rem; /* Adjusted for better scaling on mobile */
+            font-size: 1.5rem;
             font-weight: 700;
             text-align: center;
             margin-bottom: 20px;
@@ -189,7 +189,7 @@
         <h1>Indic Language Detection</h1>
         <form id="upload-form" method="post" enctype="multipart/form-data" action="/predict">
             <div class="form-group">
-                <label for="file-input">Supported formats: .wav, .mp3</label> <!-- Updated to .wav and .mp3 only -->
+                <label for="file-input">Supported formats: .wav, .mp3</label>
                 <input type="file" name="file" id="file-input" accept="audio/*">
             </div>
             <button type="submit" class="btn" id="predict-btn">Predict Language</button>
@@ -211,6 +211,11 @@
         {% if predictions %}
             <div class="predictions">
                 <h2>Model Predictions</h2>
+                {% if demo_mode %}
+                    <div style="background: rgba(255, 193, 7, 0.2); padding: 10px; border-radius: 5px; margin-bottom: 15px; color: #fff;">
+                        <strong>Demo Mode:</strong> Machine learning models are loading. Showing sample predictions.
+                    </div>
+                {% endif %}
                 {% for model, result in predictions.items() %}
                     <p>{{ model }}: {{ result.label }} {% if result.confidence %}({{ '%.2f' | format(result.confidence) }}% confidence){% endif %}</p>
                 {% endfor %}

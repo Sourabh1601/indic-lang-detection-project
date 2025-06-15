@@ -1,3 +1,4 @@
+javascript
 const CACHE_NAME = 'indic-lang-detect-v1';
 const urlsToCache = [
   '/',

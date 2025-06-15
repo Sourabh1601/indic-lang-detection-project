@@ -15,7 +15,7 @@ app.static_folder = 'static'
 
 # Paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(BASE_DIR, 'Uploads')
+UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
 ALLOWED_EXTENSIONS = {'wav', 'mp3'}  # Updated to support only .wav and .mp3
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -128,7 +128,7 @@ def extract_features(file_path):
 def index():
     return render_template('index.html')
 
-@app.route('/Uploads/<filename>')
+@app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
@@ -205,7 +205,7 @@ def predict():
         app.last_uploaded_file = wav_path  # Store the current file path
         return render_template('index.html', predictions=predictions, filename=filename)
     else:
-        return render_template('index.html', error='Invalid file format. Please upload a .wav or .mp3 file')  # Updated error message
+        return render_template('index.html', error='Invalid file format. Please upload a .wav or .mp3 file')
 
 @app.route('/manifest.json')
 def serve_manifest():
