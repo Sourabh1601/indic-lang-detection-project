@@ -2,21 +2,40 @@
   "name": "Indic Language Detection",
   "short_name": "IndicLangDetect",
   "start_url": "/",
+  "background_color": "#2ecc71",
+  "theme_color": "#2ecc71",
   "display": "standalone",
-  "background_color": "#1a1a1a",  
-  "theme_color": "#2ecc71",      
   "icons": [
-    {
-      "src": "/static/icon.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
     {
       "src": "/static/icon.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "description": "A Progressive Web App to detect languages from audio files using machine learning models.",
+  "id": "/?source=pwa",
+  "orientation": "portrait",
+  "screenshots": [
+    {
+      "src": "/static/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Homepage of Indic Language Detection"
+    },
+    {
+      "src": "/static/screenshot2.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Prediction Result Screen"
     }
   ]
 }
