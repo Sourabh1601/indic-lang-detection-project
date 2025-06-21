@@ -228,8 +228,9 @@ def predict():
         try:
             rf_pred = rf_model.predict(features_scaled)
             rf_label = label_encoder.inverse_transform(rf_pred)[0]
-            predictions['Random Forest'] = {'label': rf_label, 'confidence': None}
-            logger.info(f"Random Forest predicted: {rf_label} in {time.time() - start_time:.2f} seconds for input shape {features_scaled.shape}")
+            rf_confidence = rf_model.predict_proba(features_scaled).max() * 100  # Probability of the predicted class
+            predictions['Random Forest'] = {'label': rf_label, 'confidence': rf_confidence}
+            logger.info(f"Random Forest predicted: {rf_label}, confidence: {rf_confidence:.2f}% in {time.time() - start_time:.2f} seconds")
         except Exception as e:
             logger.error(f"Random Forest prediction failed: {str(e)}")
             predictions['Random Forest'] = {'label': 'Error', 'confidence': None}
