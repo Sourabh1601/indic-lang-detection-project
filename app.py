@@ -118,10 +118,9 @@ def convert_to_wav(file_path, filename):
         return None
 
 def extract_features(file_path):
-    """Extract MFCC features from the audio file."""
+    """Extract MFCC features and additional audio features."""
     try:
         start_time = time.time()
-        # Load audio, limit to 5 seconds, and downsample to 16 kHz
         audio, sr = librosa.load(file_path, sr=16000, duration=5.0)
         duration = librosa.get_duration(y=audio, sr=sr)
         logger.info(f"Audio loaded in {time.time() - start_time:.2f} seconds, duration: {duration} seconds")
@@ -129,11 +128,18 @@ def extract_features(file_path):
         if duration < 1.0:
             raise ValueError("Audio duration is too short (< 1 second).")
 
-        # Extract MFCC features
+        # Extract MFCCs
         mfccs = librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=13)
         mfcc_mean = np.mean(mfccs.T, axis=0)
-        logger.info(f"Extracted features from {file_path} in {time.time() - start_time:.2f} seconds, shape: {mfcc_mean.shape}")
-        return mfcc_mean
+
+        # Additional features
+        spectral_centroid = np.mean(librosa.feature.spectral_centroid(y=audio, sr=sr))
+        zcr = np.mean(librosa.feature.zero_crossing_rate(y=audio))
+        spectral_rolloff = np.mean(librosa.feature.spectral_rolloff(y=audio, sr=sr))
+
+        features = np.concatenate([mfcc_mean, [spectral_centroid, zcr, spectral_rolloff]])
+        logger.info(f"Extracted features from {file_path} in {time.time() - start_time:.2f} seconds, shape: {features.shape}")
+        return features
     except Exception as e:
         logger.error(f"Feature extraction failed for {file_path}: {str(e)}")
         return None
@@ -224,6 +230,7 @@ def predict():
     # Make predictions
     predictions = {}
     if rf_model:
+        logger.info(f"RF model available: {rf_model is not None}")
         start_time = time.time()
         try:
             rf_pred = rf_model.predict(features_scaled)
